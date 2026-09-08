@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-baloo);
+  --font-display: var(--font-baloo);
+  --font-hand: var(--font-patrick);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.9rem;
+  --background: #fdf3df;
+  --foreground: #221a2e;
+  --card: #fffdf7;
+  --card-foreground: #221a2e;
+  --popover: #fffdf7;
+  --popover-foreground: #221a2e;
+  --primary: #ff4d8d;
+  --primary-foreground: #ffffff;
+  --secondary: #ffc93c;
+  --secondary-foreground: #221a2e;
+  --muted: #f7e8c9;
+  --muted-foreground: #7d6a63;
+  --accent: #2ec4b6;
+  --accent-foreground: #221a2e;
+  --destructive: #ff5c5c;
+  --border: #221a2e;
+  --input: #f7e8c9;
+  --ring: #ff4d8d;
+}
+
+.dark {
+  --background: #221a2e;
+  --foreground: #fdf3df;
+  --card: #2c2138;
+  --card-foreground: #fdf3df;
+  --popover: #2c2138;
+  --popover-foreground: #fdf3df;
+  --primary: #ff6b9e;
+  --primary-foreground: #221a2e;
+  --secondary: #ffd166;
+  --secondary-foreground: #221a2e;
+  --muted: #3a2c44;
+  --muted-foreground: #d8b8c6;
+  --accent: #45d9ca;
+  --accent-foreground: #221a2e;
+  --destructive: #ff7a7a;
+  --border: #fdf3df;
+  --input: #3a2c44;
+  --ring: #ff6b9e;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    background-image: radial-gradient(
+      rgba(34, 26, 46, 0.06) 1.5px,
+      transparent 1.5px
+    );
+    background-size: 26px 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,14 @@
+- Prefers Next.js with shadcn/ui for frontend/web projects. Confidence: 0.7
+- Values animations and visually polished ("beautiful") UI. Confidence: 0.7
+- Prefers restrained, purposeful animation over gratuitous motion — flags decorative animated elements (e.g., bouncing dots on the cake) as unnecessary. Confidence: 0.5
+- Prefers deploying web projects to GitHub Pages (static hosting). Confidence: 0.5
+- Is open to alternative hosting platforms beyond GitHub Pages — asked about Vercel and wants one codebase/config to deploy correctly to both (e.g., environment-driven basePath rather than a hardcoded path). Confidence: 0.4
+- Prefers the simplest possible deploy workflow — pushing to main should just publish the site live, with no complex/manual CI or pipeline configuration ("không cần phức tạp"). Confidence: 0.6
+- Prefers pnpm as the package manager. Confidence: 0.8
+- Cares about visual detail/consistency and notices subtle rendering defects or misalignments (e.g., wants stacked elements evenly matched, flags rounded layered elements leaking background at corners, flags a multi-part envelope whose flap/pocket/seal don't align at a shared point, and checks that rounded corners are actually applied to bottom edges). Confidence: 0.8
+- Values responsive design across breakpoints — wants mobile vs. desktop sizing handled (titles scale, buttons stack full-width on mobile, cake resizes). Confidence: 0.6
+- Cares about interactive elements remaining functional/clickable — notices when an overlay or layered element blocks interaction (e.g., flagged a layer covering the action buttons). Confidence: 0.5
+- Cares about content remaining visible/not obscured by overlapping decorative elements (e.g., flagged the candle overlapping the recipient name). Confidence: 0.5
+- When reporting a defect, expects the fix to target the exact element flagged rather than a similar/adjacent one (e.g., corrected that the wrong cake layer had been fixed). Confidence: 0.5
+- Prefers multi-stage reveal/storytelling flows (e.g., open an envelope → read a letter → click to receive gift → reveal the main scene) over showing everything at once. Confidence: 0.6
+- Cares about lifelike proportions in illustrated/decorative UI elements, not just alignment (e.g., wanted the envelope flap extended to ~1/3 the envelope height so it reads as a real flap rather than a stub). Confidence: 0.5

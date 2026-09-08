@@ -1,0 +1,2 @@
+- Communicates in Vietnamese. Confidence: 0.9
+- Wants user-provided copy reproduced verbatim, including informal spellings, slang, and emojis, rather than normalized or corrected. Confidence: 0.5
