@@ -6,8 +6,20 @@ import { Balloons } from "@/components/balloons";
 import { Button } from "@/components/ui/button";
 import { useConfetti } from "@/components/use-confetti";
 import { Gift, PartyPopper, Sparkles } from "lucide-react";
+import { SCHEDULE } from "@/config";
 
-const RECIPIENT = "Nguyễn Thị Hằng";
+function getRecipientName(): string {
+  const now = new Date();
+  const vnTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+  const month = vnTime.getMonth() + 1;
+  const day = vnTime.getDate();
+
+  const matches = SCHEDULE.filter((s) => s.month === month && s.day === day);
+  if (matches.length === 0) return "";
+  return matches.map((m) => m.name).join(" & ");
+}
+
+const RECIPIENT = getRecipientName();
 const MESSAGE =
   "Chúc mừng sinh nhật! Chúc bạn một ngày thật rực rỡ, ngập tràn tiếng cười và những điều ngọt ngào nhất.";
 
@@ -108,9 +120,13 @@ export function BirthdayScene() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="font-display text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl md:text-6xl"
         >
-          <span className="text-secondary [text-shadow:3px_3px_0_var(--foreground)]">
-            {RECIPIENT}
-          </span>{" "}
+          {RECIPIENT && (
+            <>
+              <span className="text-secondary [text-shadow:3px_3px_0_var(--foreground)]">
+                {RECIPIENT}
+              </span>{" "}
+            </>
+          )}
           🎂
         </motion.p>
 
