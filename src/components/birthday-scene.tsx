@@ -62,7 +62,7 @@ function getVnDate() {
 
 export function BirthdayScene() {
   const { fireBurst, fireworks, bigCelebration } = useConfetti();
-  const { playClick, playCelebrate, playExplosion } = useSound();
+  const { playClick, playCelebrate, playExplosion, isBirthdaySongPlaying } = useSound();
 
   const match = getTodayMatch();
   const theme = match?.theme || THEMES.default;
@@ -165,14 +165,14 @@ export function BirthdayScene() {
           <Button
             size="lg"
             className="h-10 w-full text-sm sm:h-12 sm:w-auto sm:text-base"
+            disabled={isBirthdaySongPlaying}
             onClick={() => {
-              playClick();
               playCelebrate();
               bigCelebration();
             }}
           >
             <Gift className="size-4 sm:size-5" aria-hidden="true" />
-            Thổi nến & bắn pháo
+            {isBirthdaySongPlaying ? "Đang phát nhạc..." : "Thổi nến & bắn pháo"}
           </Button>
           <div className="flex w-full gap-2 sm:w-auto sm:gap-3">
             <Button

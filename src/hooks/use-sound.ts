@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 const audioCtx = typeof window !== "undefined" ? new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)() : null;
 
@@ -24,9 +24,9 @@ function playPop() {
   osc.stop(audioCtx.currentTime + 0.15);
 }
 
-function playBirthdaySong() {
-  if (!audioCtx) return;
-  if (audioCtx.state === "suspended") audioCtx.resume();
+function playBirthdaySong(onEnded: () => void): boolean {
+  if (!audioCtx || audioCtx.state === "closed") return false;
+  const resumePromise = audioCtx.state === "suspended" ? audioCtx.resume() : null;
 
   const notes = [
     { freq: 262, dur: 0.2 }, // C
@@ -44,6 +44,7 @@ function playBirthdaySong() {
   ];
 
   let time = audioCtx.currentTime;
+  let finalOscillator: OscillatorNode | null = null;
   for (const note of notes) {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -55,8 +56,28 @@ function playBirthdaySong() {
     gain.gain.exponentialRampToValueAtTime(0.01, time + note.dur * 0.9);
     osc.start(time);
     osc.stop(time + note.dur);
+    finalOscillator = osc;
     time += note.dur;
   }
+
+  if (!finalOscillator) return false;
+
+  let hasEnded = false;
+  const finish = () => {
+    if (hasEnded) return;
+    hasEnded = true;
+    onEnded();
+  };
+
+  finalOscillator.addEventListener("ended", finish, { once: true });
+  if (resumePromise) {
+    void resumePromise.catch((error: unknown) => {
+      console.error("Unable to resume birthday song playback.", error);
+      finish();
+    });
+  }
+
+  return true;
 }
 
 function playFirework() {
@@ -81,8 +102,12 @@ function playFirework() {
 
 export function useSound() {
   const lastPlayRef = useRef(0);
+  const birthdaySongPlayingRef = useRef(false);
+  const [isBirthdaySongPlaying, setIsBirthdaySongPlaying] = useState(false);
 
   const playClick = useCallback(() => {
+    if (birthdaySongPlayingRef.current) return;
+
     const now = Date.now();
     if (now - lastPlayRef.current < 100) return;
     lastPlayRef.current = now;
@@ -90,12 +115,28 @@ export function useSound() {
   }, []);
 
   const playCelebrate = useCallback(() => {
-    playBirthdaySong();
+    if (birthdaySongPlayingRef.current || !audioCtx) return;
+
+    birthdaySongPlayingRef.current = true;
+    setIsBirthdaySongPlaying(true);
+
+    const finish = () => {
+      birthdaySongPlayingRef.current = false;
+      setIsBirthdaySongPlaying(false);
+    };
+
+    try {
+      if (!playBirthdaySong(finish)) finish();
+    } catch (error) {
+      finish();
+      console.error("Unable to play birthday song.", error);
+    }
   }, []);
 
   const playExplosion = useCallback(() => {
+    if (birthdaySongPlayingRef.current) return;
     playFirework();
   }, []);
 
-  return { playClick, playCelebrate, playExplosion };
+  return { playClick, playCelebrate, playExplosion, isBirthdaySongPlaying };
 }
