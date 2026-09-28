@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-
-const CANDLE_COLORS = ["#ff4d8d", "#ffc93c", "#2ec4b6", "#8a63d2", "#ff4d8d"];
+import { getTodayMatch, THEMES } from "@/config";
 
 const SPRINKLES = [
   { left: "12%", top: "72%", color: "#ffc93c", rotate: 18 },
@@ -38,45 +37,44 @@ function Candle({ color, delay }: { color: string; delay: number }) {
 }
 
 export function Cake() {
+  const match = getTodayMatch();
+  const theme = match?.theme || THEMES.default;
+  const candleColors = [theme.primary, theme.secondary, theme.accent, theme.primary, theme.secondary];
+
   return (
     <div className="relative mx-auto w-[min(280px,78vw)] sm:w-[320px]">
       <div className="relative z-20 flex justify-center gap-5 sm:gap-7">
-        {CANDLE_COLORS.map((c, i) => (
+        {candleColors.map((c, i) => (
           <Candle key={i} color={c} delay={i * 0.14} />
         ))}
       </div>
 
       <div className="relative z-10 -mt-1 h-[150px] overflow-hidden rounded-[30px] border-2 border-foreground sm:h-[170px]">
-        {/* frosting */}
         <div
           className="absolute inset-x-0 top-0 h-[58px] sm:h-[66px]"
-          style={{ background: "linear-gradient(180deg, #ffb3d1 0%, #ff4d8d 100%)" }}
+          style={{ background: theme.cakeFrosting }}
         />
 
-        {/* frosting drips */}
         <div className="absolute inset-x-0 top-[42px] flex justify-around sm:top-[48px]">
           {[0, 1, 2, 3, 4, 5].map((d) => (
             <div
               key={d}
               className="h-6 w-6 rounded-b-full sm:h-7 sm:w-7"
-              style={{ background: "#ff4d8d" }}
+              style={{ background: theme.primary }}
             />
           ))}
         </div>
 
-        {/* cream band */}
         <div
           className="absolute inset-x-0 top-[58px] h-[14px] sm:top-[66px] sm:h-[16px]"
           style={{ background: "linear-gradient(180deg, #fffdf7 0%, #ffd9e8 100%)" }}
         />
 
-        {/* chocolate body */}
         <div
           className="absolute inset-x-0 top-[72px] bottom-0 sm:top-[82px]"
-          style={{ background: "linear-gradient(180deg, #a3536b 0%, #7c3a52 100%)" }}
+          style={{ background: theme.cakeBody }}
         />
 
-        {/* sprinkles */}
         {SPRINKLES.map((s, i) => (
           <div
             key={i}
@@ -90,14 +88,13 @@ export function Cake() {
           />
         ))}
 
-        {/* shine */}
         <div className="absolute inset-x-0 top-0 h-8 rounded-t-[28px] bg-white/10" />
       </div>
 
       <motion.div
         className="pointer-events-none absolute -inset-4 -z-10 rounded-[40px]"
         style={{
-          background: "radial-gradient(closest-side, rgba(255,77,141,0.28), transparent)",
+          background: `radial-gradient(closest-side, ${theme.primary}44, transparent)`,
         }}
         animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.9, 0.5] }}
         transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}

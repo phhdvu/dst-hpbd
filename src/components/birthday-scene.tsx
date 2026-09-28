@@ -5,30 +5,17 @@ import { Cake } from "@/components/cake";
 import { Balloons } from "@/components/balloons";
 import { Button } from "@/components/ui/button";
 import { useConfetti } from "@/components/use-confetti";
+import { useSound } from "@/hooks/use-sound";
 import { Gift, PartyPopper, Sparkles } from "lucide-react";
-import { SCHEDULE } from "@/config";
+import { getTodayMatch, THEMES } from "@/config";
+import { HolidayEffects } from "@/components/holiday-effects";
 
-function getRecipientName(): string {
-  const now = new Date();
-  const vnTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
-  const month = vnTime.getMonth() + 1;
-  const day = vnTime.getDate();
-
-  const matches = SCHEDULE.filter((s) => s.month === month && s.day === day);
-  if (matches.length === 0) return "";
-  return matches.map((m) => m.name).join(" & ");
-}
-
-const RECIPIENT = getRecipientName();
-const MESSAGE =
-  "Chúc mừng sinh nhật! Chúc bạn một ngày thật rực rỡ, ngập tràn tiếng cười và những điều ngọt ngào nhất.";
-
-const STARBURSTS = [
-  { top: "10%", left: "6%", delay: 0, size: 100, color: "#ffc93c" },
-  { top: "12%", left: "86%", delay: 0.5, size: 120, color: "#ff4d8d" },
-  { top: "62%", left: "5%", delay: 0.3, size: 110, color: "#2ec4b6" },
-  { top: "56%", left: "90%", delay: 0.8, size: 90, color: "#8a63d2" },
-  { top: "36%", left: "93%", delay: 0.2, size: 70, color: "#ffc93c" },
+const STARBURST_DATA = [
+  { top: "10%", left: "6%", delay: 0, size: 100 },
+  { top: "12%", left: "86%", delay: 0.5, size: 120 },
+  { top: "62%", left: "5%", delay: 0.3, size: 110 },
+  { top: "56%", left: "90%", delay: 0.8, size: 90 },
+  { top: "36%", left: "93%", delay: 0.2, size: 70 },
 ];
 
 function Starburst({
@@ -68,22 +55,33 @@ function Starburst({
   );
 }
 
+function getVnDate() {
+  const now = new Date();
+  return new Date(now.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+}
+
 export function BirthdayScene() {
   const { fireBurst, fireworks, bigCelebration } = useConfetti();
+  const { playClick, playCelebrate, playExplosion } = useSound();
+
+  const match = getTodayMatch();
+  const theme = match?.theme || THEMES.default;
+  const RECIPIENT = match?.names || "";
+  const MESSAGE = match?.message || "";
+
+  const vnDate = getVnDate();
 
   return (
     <main className="relative flex h-dvh flex-col items-center justify-center overflow-hidden px-4 py-3 text-center sm:px-6 sm:py-5">
-      {/* backdrop */}
       <div
         className="pointer-events-none absolute inset-0 -z-20"
-        style={{
-          background:
-            "radial-gradient(circle at 18% 12%, #ffe3c9 0%, transparent 42%), radial-gradient(circle at 82% 16%, #ffe0ef 0%, transparent 42%), radial-gradient(circle at 50% 92%, #d6f6ef 0%, transparent 46%)",
-        }}
+        style={{ background: theme.background }}
       />
 
-      {STARBURSTS.map((s, i) => (
-        <Starburst key={i} {...s} />
+      <HolidayEffects month={vnDate.getMonth() + 1} day={vnDate.getDate()} />
+
+      {STARBURST_DATA.map((s, i) => (
+        <Starburst key={i} {...s} color={theme.starburst[i % theme.starburst.length]} />
       ))}
 
       <Balloons />
@@ -93,7 +91,8 @@ export function BirthdayScene() {
           initial={{ opacity: 0, y: -20, rotate: -4 }}
           animate={{ opacity: 1, y: 0, rotate: -2 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="inline-flex items-center gap-2 rounded-2xl border-2 border-foreground bg-secondary px-4 py-1.5 font-hand text-sm text-secondary-foreground shadow-[4px_4px_0_0_var(--foreground)] sm:px-5 sm:text-lg"
+          className="inline-flex items-center gap-2 rounded-2xl border-2 border-foreground px-4 py-1.5 font-hand text-sm shadow-[4px_4px_0_0_var(--foreground)] sm:px-5 sm:text-lg"
+          style={{ background: theme.secondary, color: "#fff" }}
         >
           <PartyPopper className="size-4 shrink-0 sm:size-5" aria-hidden="true" />
           Hôm nay là một ngày đặc biệt!
@@ -105,30 +104,37 @@ export function BirthdayScene() {
           transition={{ duration: 0.7, delay: 0.12, ease: "easeOut" }}
           className="font-display text-5xl font-extrabold leading-none tracking-tight text-foreground sm:text-7xl md:text-8xl"
         >
-          <span className="text-primary [text-shadow:3px_3px_0_var(--foreground)]">
+          <span
+            className="[text-shadow:3px_3px_0_var(--foreground)]"
+            style={{ color: theme.primary }}
+          >
             HAPPY
           </span>
           <br />
-          <span className="text-accent [text-shadow:3px_3px_0_var(--foreground)]">
+          <span
+            className="[text-shadow:3px_3px_0_var(--foreground)]"
+            style={{ color: theme.accent }}
+          >
             BIRTHDAY
           </span>
         </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="font-display text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl md:text-6xl"
-        >
-          {RECIPIENT && (
-            <>
-              <span className="text-secondary [text-shadow:3px_3px_0_var(--foreground)]">
-                {RECIPIENT}
-              </span>{" "}
-            </>
-          )}
-          🎂
-        </motion.p>
+        {RECIPIENT && (
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="font-display text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl md:text-6xl"
+          >
+            <span
+              className="[text-shadow:3px_3px_0_var(--foreground)]"
+              style={{ color: theme.secondary }}
+            >
+              {RECIPIENT}
+            </span>{" "}
+            🎂
+          </motion.p>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.9 }}
@@ -139,14 +145,16 @@ export function BirthdayScene() {
           <Cake />
         </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.85 }}
-          className="max-w-md text-balance font-hand text-base leading-snug text-foreground/75 sm:max-w-xl sm:text-2xl"
-        >
-          {MESSAGE}
-        </motion.p>
+        {MESSAGE && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.85 }}
+            className="max-w-md text-balance font-hand text-base leading-snug text-foreground/75 sm:max-w-xl sm:text-2xl"
+          >
+            {MESSAGE}
+          </motion.p>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -157,7 +165,11 @@ export function BirthdayScene() {
           <Button
             size="lg"
             className="h-10 w-full text-sm sm:h-12 sm:w-auto sm:text-base"
-            onClick={bigCelebration}
+            onClick={() => {
+              playClick();
+              playCelebrate();
+              bigCelebration();
+            }}
           >
             <Gift className="size-4 sm:size-5" aria-hidden="true" />
             Thổi nến & bắn pháo
@@ -167,7 +179,11 @@ export function BirthdayScene() {
               size="lg"
               variant="secondary"
               className="h-10 flex-1 text-sm sm:h-12 sm:flex-none sm:text-base"
-              onClick={fireworks}
+              onClick={() => {
+                playClick();
+                playExplosion();
+                fireworks();
+              }}
             >
               <PartyPopper className="size-4 sm:size-5" aria-hidden="true" />
               Pháo hoa
@@ -176,7 +192,11 @@ export function BirthdayScene() {
               size="lg"
               variant="outline"
               className="h-10 flex-1 text-sm sm:h-12 sm:flex-none sm:text-base"
-              onClick={fireBurst}
+              onClick={() => {
+                playClick();
+                playExplosion();
+                fireBurst();
+              }}
             >
               <Sparkles className="size-4 sm:size-5" aria-hidden="true" />
               Nổ pháo nhỏ
