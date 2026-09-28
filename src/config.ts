@@ -112,6 +112,7 @@ export const SCHEDULE: ScheduleEntry[] = [
   { month: 9, day: 4, name: "Nguyễn Chiến Thắng" },
   { month: 9, day: 4, name: "Nguyễn Thị Thanh Tâm", theme: "womensday" },
   { month: 9, day: 8, name: "Nguyễn Thị Hằng", theme: "womensday" },
+  { month: 9, day: 28, name: "Nguyễn Anh Tuấn" },
   { month: 10, day: 16, name: "Phạm Hoàng Duy Vũ" },
   { month: 10, day: 20, name: "Nguyễn Tiến Đạt" },
   { month: 10, day: 30, name: "Nguyễn Sơn Hải" },
